@@ -4,6 +4,7 @@ include "display_tracks.php";
 
 // Обработка формы с фильтрами
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     // Получите значения фильтров
     $equipment = isset($_POST['equipment']) ? 'Да' : 'Нет';
     $maintenanceService = isset($_POST['maintenanceService']) ? 'Да' : 'Нет';
@@ -13,9 +14,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $HasFirstAidPost = isset($_POST['HasFirstAidPost']) ? 'Да' : 'Нет';
     $surfaceType = isset($_POST['surfaceType']) ? $_POST['surfaceType'] : '';
     $paid = isset($_POST['paid']) ? $_POST['paid'] : '';
-    // Получите значения других фильтров
 
-    // Формируйте SQL-запрос с учетом выбранных фильтров
+    $perPage = isset($_POST['per_page']) ? intval($_POST['per_page']) : 10; // Количество записей на странице
+    $currentPage = isset($_POST['page']) ? intval($_POST['page']) : 1; // Текущая страница
+
+    // SQL-запрос с учетом выбранных фильтров
     $sql = "SELECT * FROM `tracks` WHERE 1";
 
     if ($equipment !== 'Нет') {
@@ -44,7 +47,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($paid !== '') {
         $sql .= " AND paid = '$paid'";
     }
-    // Добавьте условия для других фильтров
+
+
+    $offset = ($currentPage - 1) * $perPage;
+
+    // Пагинация
+    // Добавление LIMIT и OFFSET к SQL-запросу
+    $sql .= " LIMIT $offset, $perPage";
 
     $result = mysqli_query($link, $sql);
 
@@ -171,8 +180,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="col-md-3 mt-3">
                     <button type="submit" class="btn btn-primary" id="findButton">Найти</button>
                 </div>
-            </div>
+                <div class="pagination-info">
+                    <span>
+                        Показывать по
+                        <select name="per-page" class="per-page-btn">
+                            <option>5</option>
+                            <option selected>10</option>
+                            <option>15</option>
+                            <option>20</option>
+                            <option>25</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </select>
+                        записей на странице
+                    </span>
+                    <span class="current-interval-info">
+                        Показаны записи с <span class="current-interval-start">1</span> по <span
+                            class="current-interval-end">10</span> из <span class="total-count">0</span>
+                    </span>
+                    <ul class="pagination"></ul>
+                </div>
         </form>
+    </div>
     </div>
 
     <div class="container-fluid table-responsive">
@@ -181,8 +210,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <thead>
                 <tr>
                     <th scope="col">Наименование</th>
-                    <th scope="col">Вид объекта</th>
                     <th scope="col">Адрес</th>
+                    <th scope="col">Почта</th>
+                    <th scope="col">Номер телефона</th>
+                    <th scope="col">График работы</th>
                 </tr>
             </thead>
             <!-- Тело таблицы с данными -->

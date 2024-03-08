@@ -86,8 +86,8 @@
                 </div>
                 <div class="col-md-6">
                     <h2>Поиск лыжных трасс</h2>
-                    <p class="lead">Для подбора трасс по характеристикам пройдите регистрацию.</p>
-                    <a href="registration.html" class="btn btn-primary">Регистрация</a>
+                    <p class="lead">Подбор лыжных трасс по характеристикам</p>
+                    <a href="registration.html" class="btn btn-primary">Найти трассу</a>
                 </div>
             </div>
         </div>
