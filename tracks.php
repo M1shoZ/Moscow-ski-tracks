@@ -92,12 +92,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
-                    <!-- <li class="nav-item">
-                  <a class="nav-link" href="#features">Особенности</a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" href="#contact">Связь с нами</a>
-              </li> -->
                     <li class="nav-item">
                         <a class="nav-link" href="tracks.php">Найти трассу</a>
                     </li>
@@ -196,7 +190,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </span>
                     <span class="current-interval-info">
                         Показаны записи с <span class="current-interval-start">1</span> по <span
-                            class="current-interval-end">10</span> из <span class="total-count">0</span>
+                            class="current-interval-end">10</span><span class="total-count"></span>
                     </span>
                     <ul class="pagination"></ul>
                 </div>
@@ -216,7 +210,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <th scope="col">График работы</th>
                 </tr>
             </thead>
-            <!-- Тело таблицы с данными -->
             <tbody>
                 <!-- Содержимое tbody -->
                 <?php
