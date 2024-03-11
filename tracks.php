@@ -5,7 +5,7 @@ include "display_tracks.php";
 // Обработка формы с фильтрами
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Получите значения фильтров
+    // Получение значения фильтров
     $equipment = isset($_POST['equipment']) ? 'Да' : 'Нет';
     $maintenanceService = isset($_POST['maintenanceService']) ? 'Да' : 'Нет';
     $dressingRoom = isset($_POST['dressingRoom']) ? 'Да' : 'Нет';
@@ -188,10 +188,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </select>
                         записей на странице
                     </span>
-                    <span class="current-interval-info">
+                    <!-- <span class="current-interval-info">
                         Показаны записи с <span class="current-interval-start">1</span> по <span
                             class="current-interval-end">10</span><span class="total-count"></span>
-                    </span>
+                    </span> -->
                     <ul class="pagination"></ul>
                 </div>
         </form>
