@@ -1,3 +1,7 @@
+<?php
+include "db.php";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -170,32 +174,59 @@
     <script src="https://api-maps.yandex.ru/2.1/?apikey=748f4927-077a-4a37-85e3-12a909fb54f6&lang=ru_RU"
         type="text/javascript"></script>
 
+
+
     <script>
         ymaps.ready(init);
 
         // Функция инициализации карты
         function init() {
+            console.log("Initializing map...");
+
             // Создание объекта карты
             var myMap = new ymaps.Map('yandexMap', {
                 center: [55.7558, 37.6176], // Координаты центра карты (центр Москвы)
                 zoom: 10 // Уровень масштабирования
             });
 
-            // Добавление метки на карту
-            var myPlacemark = new ymaps.Placemark([55.7558, 37.6176], {
-                hintContent: 'Москва!', // Всплывающая подсказка при наведении на метку
-                balloonContent: 'Столица России' // Содержание информационного окна при клике на метку
-            });
+            <?php
+            $sql = "SELECT 
+            SUBSTRING_INDEX(SUBSTRING_INDEX(geoData, '[', -1), ',', 1) AS longitude,
+            SUBSTRING_INDEX(SUBSTRING_INDEX(geoData, ',', -2), ']', 1) AS latitude,
+            ObjectName, Address,global_id 
+            FROM tracks";
+            $result = mysqli_query($link, $sql);
+            while ($row = mysqli_fetch_assoc($result)) {
+                // Получение координат трассы
+                $latitude = $row['latitude'];
+                $longitude = $row['longitude'];
+                $track_id = $row['global_id'];
+                ?>
+                // Создание метки на карте с координатами трассы
+                var placemark = new ymaps.Placemark([<?= $latitude ?>, <?= $longitude ?>], {
+                    hintContent: '<?= $row["ObjectName"] ?>',
+                    // balloonContent: 'Название объекта: <?= $row["ObjectName"] ?><br>Адрес: <?= $row["Address"] ?>',
+                    // Добавление атрибута data-track-id с идентификатором трассы
+                    // Этот идентификатор будет использоваться для перехода на страницу с подробной информацией о трассе
+                    'data-track-id': '<?= $track_id ?>'
+                });
+                placemark.events.add('click', function (e) {
+                    // Получение идентификатора трассы из атрибута data-track-id
+                    var trackId = e.get('target').properties.get('data-track-id');
+                    // Переход на страницу с подробной информацией о трассе, передавая идентификатор через URL
+                    window.location.href = 'track_details.php?id=' + trackId;
 
-            // Добавление метки на карту через геообъекты
-            myMap.geoObjects.add(myPlacemark);
+                });
+                myMap.geoObjects.add(placemark);
+            <?php } ?>
+            console.log("Markers added to map.");
 
             // Добавление поискового контрола
             var searchControlRight = new ymaps.control.SearchControl({
                 options: {
-                    noPlacemark: true, // Отключение отображения метки результата поиска на карте
-                    float: 'right', // Размещение контрола справа
-                    provider: 'yandex#search' // Поставщик данных для поиска 
+                    noPlacemark: true,
+                    float: 'right',
+                    provider: 'yandex#search'
                 }
             });
 
@@ -207,8 +238,8 @@
                 // Установка границ для поискового контрола, основанного на событии изменения границ
                 searchControlRight.options.set('boundedBy', event.get('newBounds'));
             });
+            console.log("Map initialization complete.");
         }
-
     </script>
 
 
